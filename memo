@@ -1,0 +1,223 @@
+1. Test oriented programing
+    - it's actually shorter and structured
+    - you'll cover all of the conditional functions (ex. validation)
+        - doesn't start with the genesis block
+        - start with the genesis block
+            - each block ingeritates the last block's hash
+            - each block contains all of the right contents (timeStamp, lasthash, hash, data)
+            - if it's perfectly working, returns true
+    - iterate use of the same function (in this case, blockchain class) wouldn't good idea
+    => use "beforeEach" at the top so that you can create blockchain function on the every front of each "describe"
+
+2. Using API for building web application
+
+3. Pub/Sub
+    - We set both a publisher and a subscriber who play their own role on the applications.
+    - A publisher publishes things to the channel
+        - It doesn't care which channel to publish
+    - A subscriber subscribes things from the channel
+        - It only cares which channel it's interested in
+    - How we use these basically?
+        1. Set two sides of them
+        2. The subscriber should "subsctibe" things from the channel
+        3. Create a event that is make something happen
+        4. Define a event with variables
+            - this.subsctiber.on('message', (channel, message) => {
+                this.handleMessage(channel, message);
+            })
+    - In the class, those has to be created by using methods;
+        - handleMessage: Once it receives any message, it'll let us know. If this from BLOCKCHAIN channel, replece chain check. 
+        - subsctibeToChannels: subscribe to multiple channels simultaneously
+        - publish: publish to any channels
+        - broadcastChain: puslish to the specific BLOCKCHAIN channel
+
+4. Wallet
+    Purpose:
+        1. To give a user public address in the system
+        2. To track and calculate the balance of the user by examining the blockchain history.
+        3. To conduct official and cryptocrafically secure transactions with other members of the system by generating signature.
+    Signature:
+        1. Wallet generates;
+            1. balance
+            2. keyPair
+            3. publicKey
+        2. With keyPair(privateKey), sign to encrypted data
+        3. To verify signature, we need 1.signature, 2.publicKey, 3.data
+            - if you have a publicKey, keyFromPublic will generate a keyFromPublic.
+            - keyFromPublic uses data to make sure whether the signature matches each other.
+
+5. Validation
+    isValidCahin():
+        - The genesis block is correct 
+        - The last hash reference is correct 
+        - The blokc difficulty matches the hash leading 0's
+        - The generated hash maches the hash
+    validTransactionData()
+        1. Each transaction must be correctly formatted
+        2. Only one mining reward per block
+        3. Valid input amounts according balance in blockchain history
+        4. Block must not have identical transactions
+
+#others
+    - if you difince a variable or a const in a constructor in a class, 
+        you don't need to put a variable to an argument place, cuz it's defined
+        this.blockchain. doesn't have to defined in each of the method in a class.
+
+#frontend;
+    1. React.js
+        - allows us not create each block's interface by taking advantage of "Conponent".
+        - import React from 'react'
+            => the browser doesn't have an access to the React library.
+            => use "bundler" such as "parcel-bundler".
+        - "parcel-bundler";
+            - in "package.json", in "script", create "parcel(call) build(argument) clients/index.js(where you want to build the project) --out-dir(out of the directry) clients/dist(where parcel should build the result)
+            - "dist" = distribution
+            - if you take out "build" (parcel clients/src/index.html --out-dir clients/dist), it'll pick up any local changs, to fonfigure it.
+        - issue of "creating multiple hexdecimal dist files.
+            - bundler creates "cache" to store what we've opened so that it'll refresh the page faster
+            => however it might not reflect on the last version of hexdecimal files
+            => blast away the cashe directry and disdirectry before every built.
+                - rm(remove) -rf(remove file) .cache(the directry to be removed) clients/dist(the same as the former one)
+        - How to create a "component";
+            - in the form of "Class" in a js file
+            - import React, { Component } from 'react'
+            - class App extends Component {};
+    2. Babel
+        - allows codes that are not currently supported (old version) to transform to the readable ones on any devices
+            - https://tomokazu-kozuma.com/how-to-set-up-es6/
+        
+    3. style;
+        1. body {
+            background-color: #444;
+            color: #fff;
+            text-align: center;
+            font-size: 20px;
+            font-family: 'Quicksand';
+            padding-top: 5%; <= upper part margin
+        }
+
+        2. .logo {
+            width: 250px;
+            height: 250px;   
+        }
+
+        3. overflowed lines;
+            - Make a "WalletInfo box and fit the sentence in it.
+            - Insert "word-wrap" functionality to the "body"
+            - Add ".App" in order to make this "flex", "column", "align"
+
+        4. In creating "Link" style
+            - in "Link", create "a" style in the css file. it'll automatically change to the Link's link
+            - a, a:hover {
+                color: #08aba6;
+                text-decoration: underline;
+            }
+            - a:hover doesn't make the color of the link when the pointer is hovering on it
+
+    4. Inherence
+        1. Inherent the children class to the parent class
+            - In order to prevent rendering the contents of the blocks in Blocks.js, it'd rather inherent each block's content from Block class (the child class)
+            - in the children class, just render the block
+            - the contents of the block is carried over from the parent class (Blocks.js)
+            - in the children class, in order to carry it over, call it as "this.props.block"
+            - in the parent class, there should be the imported child class and <Block /> at the appropriate point.
+            - in creating <Block />, don't forget to pass this data down to its child class with "block" tag
+            - this "block" tag in <Block /> is connected with "block" in "this.props.block in the child class
+
+    5. Furthermore on React
+        1. in the class (e.g. class "Blocks"), which one should I use, Method or Function?
+            * Method (Property)
+                - enables to return the result easily
+                - enables to call like "this.displayTransaction"
+                - enables to return in the type of "React.element"
+            * Function
+                - every time we call the function in the render(), it'll go back to where the function is and do it again every time.
+
+        2. Router, Route
+            * in order to use and switch various endpoints, use 'Router', 'Switch' and 'Route'
+            - Rourter: the system? the function? that allows to utilize this switching system.
+                * Router needs to have history to track the record of the access.
+            - Switch: under the Router, allows various Route to be fired
+            - ROute: literally each route that connects to different endppoints
+                * Route needs to have "path" (= the endpoint) and "component" (= the content, component, class)
+            
+            1. path on the main page should be '/'
+                - but this's too strong that it could compel pretty much any endponts
+                - in order to prevent this, put "exact={true} in the Route.
+            2. "Link" component in 'react-router-dom' component
+                - it's okay to use <a></a> but...
+                - Link allows the pages navigate without refreshing them
+        
+        3. FormGroup, FormControl
+            1. "FormGroup" is the group of forms. if you wanna create two boxes such as 'recipient' and 'amount', you need two groups.
+            2. "FormControl" is handling the condition of the form that allows you to change the type, placeholder, return value, way of update
+            3. <FormGroup>
+                    <FormControl
+                        input='text'
+                        placeholder='recipient'
+                        value={this.state.recipent}
+                        onChange={this.updateRecipient}
+                    />
+                </FormGroup>
+            4. Function
+                - input... the type of the contents (text, number)
+                - placeholder... the defalt text in the form box
+                - value... the referred content
+                - onChange... what happens if something has changed in the form box
+                => go to "updateRecipient"
+                    - "event" occurs
+                    - event.target.value = things filled in the form
+                    - it'll change every time something has changed
+            5. POST request (GET request => "Blocks" class referrence)
+                - fetch the data WITH json type of submission data (kind of same as What we do on POSTMAN), then we'll get the result
+            
+        4. componentDidMount is now clear!!!!
+            - e.g. "fetchTransactionPoolMap" in "TransactionPOOLMAP" class
+            - GET request and fetch the transaction pool data through "fetchTransactionPoolMap"
+            - if you wanna use that data right away, call "componentDidMount"
+            - meaning that as sonn as the Component is loaded up in the html document, we can fetch the transaction pool data.
+
+        5. Consecutive (Constant) page refresh
+            1. setInterval 
+                - this is the javascript function, meaning that it can be used without calling any components
+                - how to use;
+                    setInterval(() => this.fetchTransactionPoolMap(), 10000)
+            2. cansel the interval 
+                - how to use;
+                    "clearInterval(const(var))" in "componentWillUnmount(){}"
+
+
+
+    Others;
+        - When you call <script></script>, it should be the end or the later than html code, because we don't want them to load the page slowly.
+        - 'npm run dev' basically runs index.js that means that whenever you want to use something esternal ("clients", "index.html"), you have to call it with "Path.join(__dirname, "???").
+        - "Object.values(this.transactionPoolMap)" converts an object to an array
+        - when I want the page to be changed to another page automatically, "history.push('__path');"
+
+
+    
+#Modules we used
+    - elliptic:
+        / generate keyPair
+    - jest:
+        / allows us to test globally.
+    - crypto:
+        / allows us to make cryptography.
+        / cconst cryptoHash = (...inputs) => {
+            const hash = crypto.createHash("sha256");
+            hash.update(inputs.sort().join(" "));
+            return hash.digest("hex");
+        }
+    - hex-to-binary:
+        / hexdecimal(16進数) => binary(2進数)
+    - GENERATE_PEER_PORT
+        / create multiple ports
+        / GENERATE_PEER_PORT='true'
+    - cross-eve
+    - nodemon
+    - redis
+        / redis-server --daemonize yes [start redis command]
+    - Object.velues({1: "a", 2: "b", 3: "c"}) = [a, b, c];
+    - array.filter(word => word.length > 6); 
+        //creates a new array with all elements that pass the test implemented by the provided function.
+    - How to use/create a call back function (eg. onSuccess() is super usefull)
