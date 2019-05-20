@@ -14,7 +14,9 @@ const REDIS_URL = isDevelopment ?
     'redis://127.0.0.1:6379' :
     'redis://h:p85f4821848bd599492854fb5857eb230a37d2d5bc6e3c52212d874ead8cfe6e2@ec2-54-81-213-233.compute-1.amazonaws.com:18939'
 const DEFAULT_PORT = 3000;
-const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
+const ROOT_NODE_ADDRESS = isDevelopment ?
+    `http://localhost:${DEFAULT_PORT}` :
+    'https://mighty-brushlands-31028.herokuapp.com/';
 
 const app = express();
 const blockchain = new Blockchain();
@@ -28,6 +30,25 @@ app.use(express.static(path.join(__dirname, 'clients/dist')));
 
 app.get('/api/blocks', (req, res) => {
     res.json(blockchain.chain);
+})
+
+app.get('/api/blocks/length', (req, res) => {
+    res.json(blockchain.chain.length);
+})
+
+app.get('/api/blocks/:id', (req, res) => {
+    const { id } = req.params;
+    const { length } = blockchain.chain;
+
+    const blocksReversed = blockchain.chain.slice().reverse();
+
+    let startIndex = (id-1) * 5;
+    let endIndex = id * 5;
+
+    startIndex = startIndex < length ? startIndex : length;
+    endIndex = endIndex < length ? endIndex : length;
+
+    res.json(blocksReversed.slice(startIndex, endIndex))
 })
 
 app.post('/api/mine', (req, res) => {
@@ -85,6 +106,20 @@ app.get('/api/wallet-info', (req, res) => {
     })
 })
 
+app.get('/api/known-addresses', (req, res) => {
+    const addressMap = {};
+
+    for (let block of blockchain.chain) {
+        for (let transaction of block.data) {
+            const recipient = Object.keys(transaction.outputMap);
+
+            recipient.forEach(recipient => addressMap[recipient] = recipient);
+        }
+    }
+
+    res.json(Object.keys(addressMap));
+})
+
 app.get('*', (req , res) => {
     res.sendFile(path.join(__dirname, 'clients/dist/index.html'));
 })
@@ -133,7 +168,7 @@ if (isDevelopment) {
         wallet: walletBar, recipient: wallet.publicKey, amount: 15
     })
 
-    for (let i=0; i<10; i++) {
+    for (let i=0; i<20; i++) {
         if (i%3 === 0) {
             walletAction();
             walletFooAction();

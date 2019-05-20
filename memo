@@ -185,6 +185,44 @@
             2. cansel the interval 
                 - how to use;
                     "clearInterval(const(var))" in "componentWillUnmount(){}"
+    
+    6. Heroku Server use
+        1. Set up
+            1. git initiation
+                - "git init" ... git initiaion (check this with git --version)
+            2. heroku login (with the email and password)
+            3. create heroku
+                - "heroku create"
+        2. Server
+            - in order to put Redis on the Heroku server so that people can directry connect to the pages.
+            1. install the addons
+                - in this case, "Heroku Redis" is installed. Its price plan is "Hobby Dev", which costs nothing
+                - "heroku addons:create heroku-redis:hobby-dev -a [application name]"     
+            2. package.json change
+                - "cross-env ENV='development'"... will allow us to connect to the development environment
+                - && => & in "start" because heroku will give us only 60 secs to connect the express application
+            
+        3. PORT on index.js
+            1. create const "isDevelopment", so that a bounch of transactions will be issued only on the local environment
+                - whether "process.env.ENV === 'development'"
+            2. add PORT
+                - "process.env.PORT"
+            3. Redis will be used depending on whether it's on development environment or not
+                - if it's on development env => local Redis
+                - if it's not => remote server Redis (get the link with "heroku config | grep REDIS")
+        
+        4. Push 
+            1. add these changes
+                - "git add -A"
+            2. commit
+                - "git commit -m 'some message'"
+            3. push 
+                - "git push heroku master"
+            4. see the logs
+                - "heroku logs --tail"
+            5. open
+                - "heroku oepn" 
+            => jump in a public URL
 
 
 
@@ -193,7 +231,26 @@
         - 'npm run dev' basically runs index.js that means that whenever you want to use something esternal ("clients", "index.html"), you have to call it with "Path.join(__dirname, "???").
         - "Object.values(this.transactionPoolMap)" converts an object to an array
         - when I want the page to be changed to another page automatically, "history.push('__path');"
-
+        - Paginate
+            1. things we need are;
+                1. How many blocks?
+                2. Each endpont (e.g. Every 5 blocks, then ../1,2,3,...)
+            2. Dynamic endpoint
+                - at the end of the endpoint, ":id"
+                - req (request)
+                    - req.body... from body (in this case, json format)
+                    - req.params... from dynamic endpont (in this case, :id)
+            3. get the Reversed array
+                - const reversedArray = array.slice().reverse()
+                - slice()... make a copy of the array so that it won't be messed up
+                - essentially "silce()" is used to cut the part of the array
+            4. how to create page button
+                1. generate index over 5 in an array
+                    - [...Array(Math.ceil(this.state.blocksLength/5)).keys()]
+                2. place number holizontally rather than <div>
+                    - <span>
+                
+            
 
     
 #Modules we used

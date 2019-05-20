@@ -12,6 +12,8 @@ class TransactionMiner {
         // get transaction pool's valid transactions
         const validTransactions = this.transactionPool.validTransactions();
 
+        // now mining occurs even if the transaction pool is empty....
+
         // generate the miner's reward
         validTransactions.push(
             Transaction.rewardTransaction({ minerWallet: this.wallet })
